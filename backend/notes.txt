@@ -1,0 +1,302 @@
+✅ 🔥 Complete Backend API Routes Design for Your PC Activity Tracker Application
+🚀 🔍 Key Considerations Before We Start:
+Your PC Activity Tracker app aims to:
+
+Track app usage time dynamically.
+
+Provide daily, weekly, and monthly reports.
+
+Display top-used apps, and most productive/idle periods.
+
+Offer filtering, sorting, and pagination for efficient data retrieval.
+
+Ensure robust error handling and scalable API architecture.
+
+🔥 🛠️ Suggested Folder Structure
+bash
+Copy
+Edit
+/backend
+ ├── controllers/          # All route logic
+ │    ├── activityController.js
+ │    ├── reportController.js        # Aggregation and analysis
+ │    └── authController.js          # User authentication (if added)
+ │
+ ├── models/               # Mongoose models
+ │    ├── Activity.js
+ │    └── User.js           # For authentication (if added)
+ │
+ ├── routes/               # Express routes
+ │    ├── activityRoutes.js
+ │    ├── reportRoutes.js
+ │    └── authRoutes.js     # For auth-related routes
+ │
+ ├── server.js             # Entry point
+ ├── index.js
+ ├── config/               # Environment configurations
+ │    ├── db.js            # DB connection
+ │    ├── env.js
+ │
+ ├── package.json
+ ├── README.md
+ ├── .env
+ └── node_modules/
+🔥 🚀 Key Routes with Use Cases & Importance
+✅ 1️⃣ /api/activities → Fetch All Activities with Pagination
+Method: GET
+
+Endpoint: /api/activities?page=1&limit=10
+
+Controller: fetchAllActivities()
+
+Purpose:
+
+Fetches all activity logs with pagination.
+
+Optimized query to prevent overloading the server.
+
+Includes sorting, pagination, and field selection.
+
+Use Case:
+
+Displaying a list of activities in the frontend dashboard.
+
+✅ 2️⃣ /api/activities/:id → Fetch Single Activity by ID
+Method: GET
+
+Endpoint: /api/activities/:id
+
+Controller: fetchActivityById()
+
+Purpose:
+
+Fetches a single activity by its unique ID.
+
+Includes detailed information like duration, start/end time.
+
+Use Case:
+
+Viewing detailed info about a specific session or app usage.
+
+✅ 3️⃣ /api/activities/daily → Fetch Daily Activity Data
+Method: GET
+
+Endpoint: /api/activities/daily?date=2025-03-24
+
+Controller: fetchDailyActivities()
+
+Purpose:
+
+Fetches activities for a specific day.
+
+Allows querying by date.
+
+Use Case:
+
+Displaying daily activity logs on the frontend dashboard.
+
+Allowing the user to select and view past dates.
+
+✅ 4️⃣ /api/activities/weekly → Fetch Weekly Activity Data
+Method: GET
+
+Endpoint: /api/activities/weekly?week=2025-W12
+
+Controller: fetchWeeklyActivities()
+
+Purpose:
+
+Fetches activity data for a given week.
+
+Aggregates data into weekly summaries.
+
+Use Case:
+
+Displaying weekly reports with app usage insights.
+
+Comparing usage trends over multiple weeks.
+
+✅ 5️⃣ /api/activities/monthly → Fetch Monthly Activity Data
+Method: GET
+
+Endpoint: /api/activities/monthly?month=2025-03
+
+Controller: fetchMonthlyActivities()
+
+Purpose:
+
+Fetches activity data for a specific month.
+
+Aggregates and groups activities by day within the month.
+
+Use Case:
+
+Generating monthly productivity reports.
+
+Comparing month-over-month trends.
+
+✅ 5️⃣.1  /api/activities/yearly → Fetch Yearly Activity Data
+Method: GET
+
+Endpoint: /api/activities/yearly?year=2025
+
+
+Controller: fetchMonthlyActivities()
+
+Purpose:
+
+Fetches activity data for year.
+
+Aggregates and groups activities by month.
+
+Use Case:
+
+Generating yearly productivity reports.
+
+Comparing month-over-month trends.
+
+
+✅ 6️⃣ /api/activities/recent → Fetch Recently Used Apps
+Method: GET
+
+Endpoint: /api/activities/recent?limit=5
+
+Controller: fetchRecentActivities()
+
+Purpose:
+
+Fetches recently used apps or activities.
+
+Sorted by most recent usage.
+
+Use Case:
+
+Displaying the last 5 used apps.
+
+Providing a quick overview of recent activities.
+
+✅ 7️⃣ /api/activities/top → Fetch Top Used Apps
+Method: GET
+
+Endpoint: /api/activities/top?limit=5
+
+Controller: fetchTopUsedApps()
+
+Purpose:
+
+Aggregates and returns the most used apps by time spent.
+
+Use Case:
+
+Displaying productivity insights on the frontend.
+
+Identifying top distractions or productive apps.
+
+✅ 8️⃣ /api/activities/idle → Fetch Idle Periods
+Method: GET
+
+Endpoint: /api/activities/idle?minDuration=10
+
+Controller: fetchIdlePeriods()
+
+Purpose:
+
+Identifies idle periods (e.g., no app usage for 10+ minutes).
+
+Use Case:
+
+Detecting inactivity for productivity tracking.
+
+Generating idle vs active reports.
+
+✅ 9️⃣ /api/reports/productivity → Generate Productivity Report
+Method: GET
+
+Endpoint: /api/reports/productivity?start=2025-03-01&end=2025-03-24
+
+Controller: generateProductivityReport()
+
+Purpose:
+
+Generates a productivity report between two dates.
+
+Groups by app usage and categorizes time spent as productive or idle.
+
+Use Case:
+
+Displaying daily/weekly productivity scores.
+
+Generating detailed reports for analysis.
+
+✅ 🔒 /api/auth → User Authentication Routes
+Purpose:
+
+Allow users to sign up, log in, and authenticate.
+
+Use JWT for secure authentication.
+
+✅ Possible Routes:
+
+/api/auth/register → POST → Register a new user.
+
+/api/auth/login → POST → Log in with credentials.
+
+/api/auth/me → GET → Fetch current user details (protected route).
+
+/api/auth/logout → POST → Logout and clear the token.
+
+🔥 ✅ Additional Future Routes
+✅ 1️⃣ Filtering and Sorting
+/api/activities?app=chrome&sort=duration&order=desc
+
+Purpose:
+
+Filter by app name, duration, date, etc.
+
+Sort results by duration, date, or app name.
+
+✅ 2️⃣ Export Routes
+/api/activities/export/csv → Export activity data to CSV.
+
+/api/activities/export/pdf → Export detailed reports to PDF.
+
+Purpose:
+
+Allow users to download their data for analysis.
+
+✅ 3️⃣ Admin/Management Routes
+/api/admin/stats → Show total users, total logs, etc.
+
+/api/admin/clearLogs → Clear old activity logs.
+
+Purpose:
+
+Manage the backend efficiently.
+
+Clear unnecessary data periodically.
+
+🚀 ✅ Conclusion: Your Complete Backend Route List
+/api/activities → Fetch all activities with pagination.
+
+/api/activities/:id → Fetch activity by ID.
+
+/api/activities/daily → Daily data.
+
+/api/activities/weekly → Weekly data.
+
+/api/activities/monthly → Monthly data.
+
+/api/activities/recent → Recent apps.
+
+/api/activities/top → Top used apps.
+
+/api/activities/idle → Idle periods.
+
+/api/reports/productivity → Productivity report.
+
+/api/auth → Authentication routes.
+
+GET http://localhost:3000/api/activities/yearly?year=2025
+
+
+Future Routes: Filtering, exporting, admin routes.

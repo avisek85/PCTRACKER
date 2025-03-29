@@ -1,0 +1,18 @@
+[
+    {
+        "title": "Metrics | Cloud: MongoDB Cloud - Google Chrome",
+        "app": "Google Chrome",
+        "date": "2025-03-24",
+        "startTime": "2025-03-24T11:46:32.744Z",
+        "endTime": "2025-03-24T11:46:37.760Z",
+        "duration": 5
+    },
+    {
+        "title": "Cluster0 Data | Cloud: MongoDB Cloud - Google Chrome",
+        "app": "Google Chrome",
+        "date": "2025-03-24",
+        "startTime": "2025-03-24T11:46:42.768Z",
+        "endTime": "2025-03-24T11:46:47.779Z",
+        "duration": 5
+    }
+]

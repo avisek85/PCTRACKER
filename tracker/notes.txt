@@ -1,0 +1,38 @@
+Your current tracker works, but for production readiness, we need improvements in:
+✅ Error Handling – Prevent crashes & log issues properly.
+✅ Asynchronous File Operations – Use non-blocking fs.promises.
+✅ Data Structuring & Format – Ensure efficient querying & storage.
+✅ Modular Code Structure – Improve maintainability & scalability.
+✅ Performance Optimization – Minimize disk operations.
+
+
+Your idea is great:
+✅ Store data locally in a file for 60 seconds to avoid unnecessary backend calls.
+✅ Send the data in bulk to the backend every 60 seconds to improve efficiency.
+✅ Clear the local file after sending the data successfully to keep it clean.
+
+
+/********************************************************************************************************************
+
+2️⃣ Running the Script on System Startup
+Windows: Using Task Scheduler
+📌 Steps: 1️⃣ Open Task Scheduler (Win + R → taskschd.msc → Enter).
+2️⃣ Click Create Basic Task.
+3️⃣ Name: WindowTracker.
+4️⃣ Select Trigger → At log on (runs on system startup).
+5️⃣ Select Action → Start a program.
+6️⃣ Browse & select:
+
+makefile
+Copy
+Edit
+C:\Program Files\nodejs\node.exe
+7️⃣ In "Add arguments", enter:
+
+vbnet
+Copy
+Edit
+C:\path\to\tracker.js
+8️⃣ Click Finish → Your script will now start automatically.
+
+/********************************************************************************************************************

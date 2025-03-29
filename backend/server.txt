@@ -1,0 +1,18 @@
+
+🔥 Step 1: Install Dependencies
+🔧 Step 2: Configure Environment Variables
+🚀 Step 3: Database Configuration (src/config/db.js)
+⚙️ Step 4: Environment Variables Loader (src/config/env.js)
+🏗 Step 5: Define Mongoose Model (src/models/Activity.js)
+📡 Step 6: API Controller (src/controllers/activityController.js)
+🚦 Step 7: Define Routes (src/routes/activityRoutes.js)
+🛠 Step 8: Middleware for Error Handling (src/middlewares/errorMiddleware.js)
+🌍 Step 9: Setup Express Server (src/server.js)
+✅ Final Step: Run the Application
+
+🎯 Why is this Better?
+✅ Scalable - Follows modular architecture for easy expansion
+✅ Maintainable - Separates concerns (routes, controllers, models, config)
+✅ Secure - Uses environment variables for sensitive data
+✅ Efficient Logging - Uses morgan for request logging
+✅ Proper Error Handling - Includes a global error handler

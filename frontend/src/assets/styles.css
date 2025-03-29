@@ -1,0 +1,20 @@
+:root {
+    --primary-color: #4f46e5;
+    --secondary-color: #22c55e;
+    --text-color: #374151;
+  }
+  
+  @layer base {
+    body {
+      @apply bg-gray-50 text-gray-800;
+    }
+  
+    h1, h2, h3, h4, h5 {
+      @apply font-bold;
+    }
+  
+    button {
+      @apply bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition;
+    }
+  }
+  
