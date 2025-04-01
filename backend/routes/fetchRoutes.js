@@ -9,6 +9,6 @@ router.get("/date-activities",fetchSpecificDateActivities);
 router.get("/week-activities",fetchSpecificWeekActivity);
 router.get("/month-activities",fetchSpecificMonthActivity);
 router.get("/year-activities",fetchSpecificYearActivity);
-router.get("/topused-app",fetchTopUsedApps);
+router.get("/topused-apps",fetchTopUsedApps);
 
 export default router;

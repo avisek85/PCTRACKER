@@ -465,6 +465,23 @@ export default Loader;
 ✅ Switch to pnpm → For long-term stability and better dependency management
 
 
+Why We Use Error Boundaries
+Error boundaries are React components that catch JavaScript errors anywhere in their child component tree, log those errors, and display a fallback UI instead of crashing the entire application. They work like JavaScript catch {} blocks, but for components.
+
+Key Reasons to Use Error Boundaries:
+Prevent Complete App Crashes
+Without error boundaries, a single error in any component can break your entire application.
+
+Better User Experience
+Instead of seeing a blank screen or broken UI, users see a friendly error message.
+
+Error Logging
+You can log errors to your error reporting service (like Sentry) in the componentDidCatch method.
+
+Isolate Problems
+Errors in one part of the UI won't affect unrelated components.
+
+
 
 
 

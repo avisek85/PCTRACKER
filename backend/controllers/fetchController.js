@@ -1,5 +1,6 @@
 import {Activity} from "../models/Activity.js";
 import {startOfWeek, endOfWeek, startOfMonth, endOfMonth, startOfYear, endOfYear} from 'date-fns';
+import { normalizeTimeResponse } from "../utils/normalizeTimeResponse.js";
 
 export const fetchAllActivities = async(req,res)=>{
     try {
@@ -23,6 +24,8 @@ export const fetchAllActivities = async(req,res)=>{
                 message:"No activities found",
             });
         }
+
+        console.log("total , limit, totalPages", total, limit, Math.ceil(total/limit));
 
         // send pagination response
         res.status(200).json({
@@ -67,32 +70,7 @@ export const fetchSpecificDateActivities = async(req,res)=>{
             return res.status(404).json({success:false, message:"No activities found for the date"});
         }
 
-        //Aggregate total duration per app
-        const aggregateData = {};
-        for(const activity of activities){
-            if(!aggregateData[activity.app]){
-                aggregateData[activity.app] = {
-                    totalDuration:0,
-                    logs:[]
-                };
-            }
-            aggregateData[activity.app].totalDuration += activity.duration;
-            aggregateData[activity.app].logs.push({
-                title:activity.title,
-                startTime:activity.startTime,
-                endTime:activity.endTime,
-                duration:activity.duration
-            });
-        }
-
-        //Prepare the response 
-        const response = {
-            success:true,
-            date:date,
-            totalApps:Object.keys(aggregateData).length,
-            data:aggregateData
-        };
-        res.status(200).json(response);
+        res.status(200).json(normalizeTimeResponse(activities, 'date', date));
 
 
     } catch (error) {
@@ -148,37 +126,37 @@ export const fetchSpecificWeekActivity = async(req,res)=>{
         }
 
           // Aggregate data day by day
-          const weeklySummary = {};
-          activities.forEach(activity =>{
-              const {date , app, title, startTime, endTime, duration} = activity;
-              if(!weeklySummary[date]){
-                weeklySummary[date] = {};
-              }
-              if(!weeklySummary[date][app]){
-                weeklySummary[date][app] = {
-                    totalDuration:0,
-                    logs:[]
-                };
-              }
-              weeklySummary[date][app].totalDuration += duration;
-              weeklySummary[date][app].logs.push({
-                title,
-                startTime,
-                endTime,
-                duration
-              });
-          });
+        //   const weeklySummary = {};
+        //   activities.forEach(activity =>{
+        //       const {date , app, title, startTime, endTime, duration} = activity;
+        //       if(!weeklySummary[date]){
+        //         weeklySummary[date] = {};
+        //       }
+        //       if(!weeklySummary[date][app]){
+        //         weeklySummary[date][app] = {
+        //             totalDuration:0,
+        //             logs:[]
+        //         };
+        //       }
+        //       weeklySummary[date][app].totalDuration += duration;
+        //       weeklySummary[date][app].logs.push({
+        //         title,
+        //         startTime,
+        //         endTime,
+        //         duration
+        //       });
+        //   });
 
-          // prepare structured response
-          const response = {
-            success:true,
-            week,
-            dateRange:{start:startStr, end:endStr},
-            totalDays:Object.keys(weeklySummary).length,
-            weeklySummary
-          };
+        //   // prepare structured response
+        //   const response = {
+        //     success:true,
+        //     week,
+        //     dateRange:{start:startStr, end:endStr},
+        //     totalDays:Object.keys(weeklySummary).length,
+        //     weeklySummary
+        //   };
 
-          res.status(200).json(response);
+          res.status(200).json(normalizeTimeResponse(activities, 'week', week));
 
 
     } catch (error) {
@@ -226,37 +204,37 @@ export const fetchSpecificMonthActivity = async(req,res)=>{
             })
         }
 
-        // Aggregating data day by day 
-        const monthlySummary = {};
-        activities.forEach(activity =>{
-            const {date , app , title, startTime, endTime, duration} = activity;
-            if(!monthlySummary[date]){
-                monthlySummary[date] = {};
-            }
-            if(!monthlySummary[date][app]){
-                monthlySummary[date][app]={
-                    totalDuration:0,
-                    logs:[],
-                }
-            }
-            monthlySummary[date][app].totalDuration += duration;
-            monthlySummary[date][app].logs.push({
-                title,
-                startTime,
-                endTime,
-                duration
-            })
-        })
+        // // Aggregating data day by day 
+        // const monthlySummary = {};
+        // activities.forEach(activity =>{
+        //     const {date , app , title, startTime, endTime, duration} = activity;
+        //     if(!monthlySummary[date]){
+        //         monthlySummary[date] = {};
+        //     }
+        //     if(!monthlySummary[date][app]){
+        //         monthlySummary[date][app]={
+        //             totalDuration:0,
+        //             logs:[],
+        //         }
+        //     }
+        //     monthlySummary[date][app].totalDuration += duration;
+        //     monthlySummary[date][app].logs.push({
+        //         title,
+        //         startTime,
+        //         endTime,
+        //         duration
+        //     })
+        // })
 
-        // prepare structured response
-        const response = {
-            success:true,
-            month,
-            dateRange:{start:startStr,end:endStr},
-            totalDays:Object.keys(monthlySummary).length,
-            monthlySummary
-        };
-        res.status(200).json(response);
+        // // prepare structured response
+        // const response = {
+        //     success:true,
+        //     month,
+        //     dateRange:{start:startStr,end:endStr},
+        //     totalDays:Object.keys(monthlySummary).length,
+        //     monthlySummary
+        // };
+        res.status(200).json(normalizeTimeResponse(activities, 'month', month));
 
 
 
@@ -272,13 +250,13 @@ export const fetchSpecificMonthActivity = async(req,res)=>{
 export const fetchSpecificYearActivity = async(req,res)=>{
     try {
         const {year} = req.query;
-        // console.log("year is ",year);
-        if(!year || isNaN(year)){
-            return res.status(400).json({
-                success:false,
-                message:"Year parameter is required"
-            })
-        }
+      // Validate year parameter
+    if (!year || isNaN(year)) {
+        return res.status(400).json({
+          success: false,
+          message: "Valid year parameter is required (e.g., 2023)"
+        });
+      }
         const yearNum = Number(year);
 
         // Calculate date range for the year
@@ -291,30 +269,39 @@ export const fetchSpecificYearActivity = async(req,res)=>{
         // console.log(`[Info] Fetching activities for the year ${yearNum} from ${startStr} to ${endStr}`);
 
         // Aggregation pipeline group data by month and app
-        const activities = await Activity.aggregate([
-            {
-                $match:{
-                    date:{
-                        $gte:startStr,
-                        $lte:endStr,
-                    }
-                },
+        // const activities = await Activity.aggregate([
+        //     {
+        //         $match:{
+        //             date:{
+        //                 $gte:startStr,
+        //                 $lte:endStr,
+        //             }
+        //         },
                 
-            },{
-                $group:{
-                    _id:{
-                        month:{$substr:["$date",0,7]},
-                        app:"$app"
-                    },
-                    totalDuration:{$sum:"$duration"},
-                }
-            },{
-                $sort:{
-                    "_id.month":1,
-                    "totalDuration":-1,
-                }
-            }
-        ]);
+        //     },{
+        //         $group:{
+        //             _id:{
+        //                 month:{$substr:["$date",0,7]},
+        //                 app:"$app"
+        //             },
+        //             totalDuration:{$sum:"$duration"},
+        //         }
+        //     },{
+        //         $sort:{
+        //             "_id.month":1,
+        //             "totalDuration":-1,
+        //         }
+        //     }
+        // ]);
+
+
+        // Fetch all activities for the year
+    const activities = await Activity.find({
+        date: {
+          $gte: startStr,
+          $lte: endStr
+        }
+      }).sort({ date: 1 });
 
         if(activities.length === 0){
             return res.status(404).json({
@@ -323,33 +310,35 @@ export const fetchSpecificYearActivity = async(req,res)=>{
             });
         }
 
-        console.log("checking the activities data here : ",activities);
+       // Create monthly summary for additional context
+    const monthlySummary = activities.reduce((acc, activity) => {
+        const month = activity.date.substring(0, 7); // YYYY-MM format
+        if (!acc[month]) {
+          acc[month] = {
+            totalDuration: 0,
+            appUsage: {}
+          };
+        }
+        acc[month].totalDuration += activity.duration;
+        
+        if (!acc[month].appUsage[activity.app]) {
+          acc[month].appUsage[activity.app] = 0;
+        }
+        acc[month].appUsage[activity.app] += activity.duration;
+        
+        return acc;
+      }, {});
 
-        // organizing data into month wise app summary
-        const yearlySummary = {};
-
-        activities.forEach(activity =>{
-            const {_id,totalDuration} = activity;
-            const {month, app} = _id;
-            
-            if(!yearlySummary[month]){
-                yearlySummary[month] = [];
-            }
-            yearlySummary[month].push({
-                app,
-                totalDuration
-            });
-        });
-
-        // prepare structured response 
-        const response = {
-            success:true,
-            year,
-            dateRange:{start:startStr, end:endStr},
-            totalMonths:Object.keys(yearlySummary).length,
-            yearlySummary,
-        };
-        res.status(200).json(response);
+      // Create normalized response
+    const response = {
+        ...normalizeTimeResponse(activities, 'year', year),
+        monthlySummary,
+        dateRange: {
+          start: startStr,
+          end: endStr
+        }
+      };
+      res.status(200).json(response);
     } catch (error) {
         console.error("[Error] Failed to fetch yearly activities:", error);
         res.status(500).json({
@@ -359,55 +348,73 @@ export const fetchSpecificYearActivity = async(req,res)=>{
     }
 }
 
-export const fetchTopUsedApps = async(req,res)=>{
+export const fetchTopUsedApps = async (req, res) => {
     try {
-        const limit = parseInt(req.query.limit) || 5; // default limit 5
-        
-        //Aggregation pipeline : group by app , sum duration and sort by total time
-        const topApps = await Activity.aggregate([
-            {
-                $group:{
-                    _id:"$app", // group by app
-                    totalDuration:{$sum:"$duration"},
-                    totalSessions:{$sum:1} // count total sessions
-                }
+      const limit = parseInt(req.query.limit) || 5; // default to top 5 apps
+  
+      // Aggregation pipeline to get top used apps
+      const aggregationResult = await Activity.aggregate([
+        {
+          $group: {
+            _id: "$app",
+            totalDuration: { $sum: "$duration" },
+            sessions: { 
+              $push: {
+                title: "$title",
+                duration: "$duration",
+                date: "$date",
+                startTime: "$startTime",
+                endTime: "$endTime"
+              }
             },
-            {
-                $sort:{
-                    totalDuration:-1 // sort by highest duration
-                }
-            },{
-                $limit:limit // limit the results
-            }
-        ]);
-
-        if(topApps.length === 0){
-            return res.status(404).json({
-                success:fasle,
-                message:"No app usage data availabe"
-            })
-        };
-
-        // formation response 
-        const response = {
-            success:true,
-            totalApps:topApps.length,
-            topApps:topApps.map(app=>({
-                name:app._id,
-                totalDuration:app.totalDuration,
-                totalSessions:app.totalSessions
-            }))
-        };
-
-        res.status(200).json(response);
+            sessionCount: { $sum: 1 }
+          }
+        },
+        { $sort: { totalDuration: -1 } },
+        { $limit: limit }
+      ]);
+  
+      if (aggregationResult.length === 0) {
+        return res.status(404).json({
+          success: false,
+          message: "No app usage data available"
+        });
+      }
+  
+      // Transform to match normalizeTimeResponse structure
+      const transformedData = aggregationResult.map(app => ({
+        app: app._id,
+        duration: app.totalDuration,
+        sessions: app.sessions,
+        date: app.sessions[0]?.date // Using first session date as reference
+      }));
+  
+      // Create normalized response with additional top apps metadata
+      const response = {
+        ...normalizeTimeResponse(transformedData, 'topApps', limit),
+        metadata: {
+          totalApps: aggregationResult.length,
+          retrievedAt: new Date().toISOString(),
+          limit: limit
+        },
+        apps: aggregationResult.map(app => ({
+          name: app._id,
+          totalDuration: app.totalDuration,
+          totalSessions: app.sessionCount
+        }))
+      };
+  
+      res.status(200).json(response);
+  
     } catch (error) {
-        console.error("[Error] Failed to fetch top used apps: ",error);
-        res.staus(500).json({
-            success:false,
-            message:"Internal Server Error"
-        })
-    };
-}
+      console.error("[Error] Failed to fetch top used apps:", error);
+      res.status(500).json({
+        success: false,
+        message: "Internal Server Error",
+        error: error.message
+      });
+    }
+  };
 
 
 
